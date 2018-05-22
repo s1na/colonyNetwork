@@ -610,7 +610,7 @@ contract("ColonyNetworkStaking", accounts => {
       let repLogEntryMiner = await repCycle.getReputationUpdateLogEntry.call(0);
       assert.equal(repLogEntryMiner[0], MAIN_ACCOUNT);
       assert.equal(repLogEntryMiner[1].toString(), new BN("1").mul(new BN("10").pow(new BN("18"))).toString());
-      assert.equal(repLogEntryMiner[2].toString(), "0");
+      assert.equal(repLogEntryMiner[2].toString(), "3");
       assert.equal(repLogEntryMiner[3], metaColony.address);
       assert.equal(repLogEntryMiner[4].toString(), "4");
       assert.equal(repLogEntryMiner[5].toString(), "0");
@@ -618,7 +618,7 @@ contract("ColonyNetworkStaking", accounts => {
       repLogEntryMiner = await repCycle.getReputationUpdateLogEntry.call(1);
       assert.equal(repLogEntryMiner[0], MAIN_ACCOUNT);
       assert.equal(repLogEntryMiner[1].toString(), new BN("1").mul(new BN("10").pow(new BN("18"))).toString());
-      assert.equal(repLogEntryMiner[2].toString(), "0");
+      assert.equal(repLogEntryMiner[2].toString(), "3");
       assert.equal(repLogEntryMiner[3], metaColony.address);
       assert.equal(repLogEntryMiner[4].toString(), "4");
       assert.equal(repLogEntryMiner[5].toString(), "4");
@@ -729,7 +729,7 @@ contract("ColonyNetworkStaking", accounts => {
       let repLogEntryMiner = await repCycle.getReputationUpdateLogEntry.call(0);
       assert.equal(repLogEntryMiner[0], MAIN_ACCOUNT);
       assert.equal(repLogEntryMiner[1].toString(), new BN("1").mul(new BN("10").pow(new BN("18"))).toString());
-      assert.equal(repLogEntryMiner[2].toString(), "0");
+      assert.equal(repLogEntryMiner[2].toString(), "3");
       assert.equal(repLogEntryMiner[3], metaColony.address);
       assert.equal(repLogEntryMiner[4].toString(), "4");
       assert.equal(repLogEntryMiner[5].toString(), "0");
@@ -737,7 +737,7 @@ contract("ColonyNetworkStaking", accounts => {
       repLogEntryMiner = await repCycle.getReputationUpdateLogEntry.call(1);
       assert.equal(repLogEntryMiner[0], OTHER_ACCOUNT);
       assert.equal(repLogEntryMiner[1].toString(), new BN("1").mul(new BN("10").pow(new BN("18"))).toString());
-      assert.equal(repLogEntryMiner[2].toString(), "0");
+      assert.equal(repLogEntryMiner[2].toString(), "3");
       assert.equal(repLogEntryMiner[3], metaColony.address);
       assert.equal(repLogEntryMiner[4].toString(), "4");
       assert.equal(repLogEntryMiner[5].toString(), "4");
@@ -903,7 +903,7 @@ contract("ColonyNetworkStaking", accounts => {
 
       badClient = new MaliciousReputationMinerExtraRep(
         { loader: contractLoader, minerAddress: OTHER_ACCOUNT, realProviderPort: REAL_PROVIDER_PORT },
-        13,
+        12,
         "0xfffffffff"
       );
       await badClient.initialise(colonyNetwork.address);
@@ -1042,7 +1042,7 @@ contract("ColonyNetworkStaking", accounts => {
 
       badClient = new MaliciousReputationMinerWrongUID(
         { loader: contractLoader, minerAddress: OTHER_ACCOUNT, realProviderPort: REAL_PROVIDER_PORT },
-        5,
+        12,
         "0xfffffffff"
       );
       await badClient.initialise(colonyNetwork.address);
@@ -1060,6 +1060,9 @@ contract("ColonyNetworkStaking", accounts => {
 
       await goodClient.submitJustificationRootHash();
       await badClient.submitJustificationRootHash();
+
+      await goodClient.respondToBinarySearchForChallenge();
+      await badClient.respondToBinarySearchForChallenge();
 
       await goodClient.respondToBinarySearchForChallenge();
       await badClient.respondToBinarySearchForChallenge();
@@ -1137,6 +1140,9 @@ contract("ColonyNetworkStaking", accounts => {
 
       await goodClient.submitJustificationRootHash();
       await badClient.submitJustificationRootHash();
+
+      await goodClient.respondToBinarySearchForChallenge();
+      await badClient.respondToBinarySearchForChallenge();
 
       await goodClient.respondToBinarySearchForChallenge();
       await badClient.respondToBinarySearchForChallenge();
@@ -1272,6 +1278,8 @@ contract("ColonyNetworkStaking", accounts => {
       await goodClient.respondToBinarySearchForChallenge();
       await badClient.respondToBinarySearchForChallenge();
       await goodClient.respondToBinarySearchForChallenge();
+      await badClient.respondToBinarySearchForChallenge();
+      await goodClient.respondToBinarySearchForChallenge();
 
       // Get the log entry we're arguing over.
       const submission = await repCycle.disputeRounds(0, 0);
@@ -1324,6 +1332,8 @@ contract("ColonyNetworkStaking", accounts => {
 
       await goodClient.respondToBinarySearchForChallenge();
       await badClient.respondToBinarySearchForChallenge();
+      await badClient.respondToBinarySearchForChallenge();
+      await goodClient.respondToBinarySearchForChallenge();
       await badClient.respondToBinarySearchForChallenge();
       await goodClient.respondToBinarySearchForChallenge();
 
@@ -1459,6 +1469,8 @@ contract("ColonyNetworkStaking", accounts => {
 
       await goodClient.respondToBinarySearchForChallenge();
       await badClient.respondToBinarySearchForChallenge();
+      await badClient.respondToBinarySearchForChallenge();
+      await goodClient.respondToBinarySearchForChallenge();
       await badClient.respondToBinarySearchForChallenge();
       await goodClient.respondToBinarySearchForChallenge();
       await badClient.respondToBinarySearchForChallenge();
