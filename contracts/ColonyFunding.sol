@@ -21,6 +21,7 @@ pragma experimental "v0.5.0";
 import "../lib/dappsys/math.sol";
 import "./SafeMath.sol";
 import "./ERC20Extended.sol";
+import "./ITokenLocking.sol";
 import "./IColonyNetwork.sol";
 import "./ColonyStorage.sol";
 
@@ -161,7 +162,8 @@ contract ColonyFunding is ColonyStorage, DSMath {
     activeRewardPayouts[_token] = true;
     globalRewardPayoutCount += 1;
 
-    //TODO: Lock everyones tokens
+    // Lock token
+    ITokenLocking(tokenLocking).lockToken(_token);
 
     rewardPayoutCycles[globalRewardPayoutCount] = RewardPayoutCycle(
       IColonyNetwork(colonyNetworkAddress).getReputationRootHash(),
@@ -181,7 +183,7 @@ contract ColonyFunding is ColonyStorage, DSMath {
 
     //TODO: Prove that userReputation and totalReputation in reputationState are correct
 
-    uint256 userTokens = token.balanceOf(msg.sender);
+    uint256 userTokens = ITokenLocking(tokenLocking).getUserLockedBalance(token, msg.sender);
 
     require(_totalReputation > 0, "colony-reward-payout-invalid-total-reputation");
     require(userTokens > 0, "colony-reward-payout-invalid-user-tokens");
@@ -211,8 +213,8 @@ contract ColonyFunding is ColonyStorage, DSMath {
     pots[0].balance[payout.tokenAddress] = sub(pots[0].balance[payout.tokenAddress], reward);
 
     userRewardPayoutCount[msg.sender] += 1;
-
-    // TODO: Unlock user tokens
+    // Set user's token lock counter
+    ITokenLocking(tokenLocking).unlockTokenForUser(token, msg.sender);
 
     ERC20Extended(payout.tokenAddress).transfer(msg.sender, reward);
   }

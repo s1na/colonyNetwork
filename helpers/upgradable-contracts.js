@@ -61,10 +61,10 @@ export async function setupEtherRouter(interfaceContract, deployedImplementation
   return Promise.all(promises);
 }
 
-export async function setupUpgradableToken(token, resolver, etherRouter) {
+export async function setupUpgradableTokenLocking(tokenLocking, resolver, etherRouter) {
   const deployedImplementations = {};
-  deployedImplementations.Token = token.address;
-  await setupEtherRouter("ERC20Extended", deployedImplementations, resolver);
+  deployedImplementations.TokenLocking = tokenLocking.address;
+  await setupEtherRouter("ITokenLocking", deployedImplementations, resolver);
 
   await etherRouter.setResolver(resolver.address);
   const registeredResolver = await etherRouter.resolver.call();
